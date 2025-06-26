@@ -1,0 +1,7 @@
+ALTER TABLE Claims
+ADD ClaimTypeID INT;
+
+ALTER TABLE Claims
+ADD CONSTRAINT FK_Claims_ClaimTypes
+FOREIGN KEY (ClaimTypeID)
+REFERENCES ClaimTypes(ClaimTypeID);
