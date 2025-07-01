@@ -190,3 +190,4 @@ C:\Users\willj\OneDrive\Documents\Projects\C# Projects\onelink-tax-rule-engine\A
 C:\Users\willj\OneDrive\Documents\Projects\C# Projects\onelink-tax-rule-engine\Api\bin\Debug\net9.0\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\willj\OneDrive\Documents\Projects\C# Projects\onelink-tax-rule-engine\Api\bin\Debug\net9.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\willj\OneDrive\Documents\Projects\C# Projects\onelink-tax-rule-engine\Api\bin\Debug\net9.0\runtimes\win-x86\native\e_sqlite3.dll
+C:\Users\willj\OneDrive\Documents\Projects\C# Projects\onelink-tax-rule-engine\Api\obj\Debug\net9.0\Api.sourcelink.json
