@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using onelink_tax_rule_engine.Api.Data;
-using onelink_tax_rule_engine.Api.Models;
+using onelink_tax_rule_engine.Api.Models;   // ← Claim & ClaimType
 
 namespace onelink_tax_rule_engine.Api.Controllers;
 
@@ -23,7 +23,10 @@ public class ClaimsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Claim>> Get(int id)
     {
-        var claim = await _db.Claims.FindAsync(id);
+        var claim = await _db.Claims
+                             .Include(c => c.ClaimType)
+                             .FirstOrDefaultAsync(c => c.ClaimID == id);
+
         return claim is null ? NotFound() : Ok(claim);
     }
 }
