@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OklahomaTaxEngine.Data;
 using OklahomaTaxEngine.Services;
+using OklahomaTaxEngine.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,27 +60,50 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseHttpsRedirection();
+// IMPORTANT: Static files middleware must come BEFORE other middleware
+app.UseDefaultFiles(); // This enables serving default files like index.html
+app.UseStaticFiles();  // This enables serving static files from wwwroot
+
+// Only use HTTPS redirection in production
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseCors("AllowAll");
-app.UseStaticFiles();
-app.UseDefaultFiles();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
+// Add a fallback route for the root
+app.MapGet("/", () => Results.Redirect("/index.html"));
+
 // Ensure database is created and seeded
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.EnsureCreated();
-    
-    // Seed initial data if needed
-    if (!dbContext.TaxRules.Any())
+    try
     {
-        SeedDatabase(dbContext);
+        dbContext.Database.EnsureCreated();
+        
+        // Seed initial data if needed
+        if (!dbContext.TaxRules.Any())
+        {
+            SeedDatabase(dbContext);
+            Console.WriteLine("Database seeded successfully!");
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while creating/seeding the database.");
     }
 }
+
+Console.WriteLine($"Application started. Access the application at:");
+Console.WriteLine($"  - http://localhost:{builder.Configuration["ASPNETCORE_URLS"]?.Split(';')[0].Split(':').Last() ?? "5000"}");
+Console.WriteLine($"  - http://localhost:{builder.Configuration["ASPNETCORE_URLS"]?.Split(';')[0].Split(':').Last() ?? "5000"}/api-docs (API Documentation)");
 
 app.Run();
 
@@ -192,22 +216,39 @@ void SeedDatabase(AppDbContext context)
 
     context.TaxRules.AddRange(taxRules);
 
-    // Add sample taxpayer
-    var taxpayer = new TaxPayer
+    // Add sample taxpayers
+    var taxpayers = new[]
     {
-        TaxId = "OK123456789",
-        Name = "Sample Corporation",
-        Type = "Corporate",
-        Email = "contact@samplecorp.com",
-        Phone = "405-555-0100",
-        Address = "123 Main Street",
-        City = "Oklahoma City",
-        State = "OK",
-        ZipCode = "73102",
-        RegistrationDate = DateTime.Now,
-        IsActive = true
+        new TaxPayer
+        {
+            TaxId = "OK123456789",
+            Name = "Sample Corporation",
+            Type = "Corporate",
+            Email = "contact@samplecorp.com",
+            Phone = "405-555-0100",
+            Address = "123 Main Street",
+            City = "Oklahoma City",
+            State = "OK",
+            ZipCode = "73102",
+            RegistrationDate = DateTime.Now,
+            IsActive = true
+        },
+        new TaxPayer
+        {
+            TaxId = "OK987654321",
+            Name = "Demo Individual Taxpayer",
+            Type = "Individual",
+            Email = "demo@example.com",
+            Phone = "405-555-0123",
+            Address = "456 Demo Street",
+            City = "Stillwater",
+            State = "OK",
+            ZipCode = "74074",
+            RegistrationDate = DateTime.Now,
+            IsActive = true
+        }
     };
 
-    context.TaxPayers.Add(taxpayer);
+    context.TaxPayers.AddRange(taxpayers);
     context.SaveChanges();
 }
