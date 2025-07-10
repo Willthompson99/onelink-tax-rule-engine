@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oklahoma Tax Engine - Comprehensive Tax Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ok-blue: #0066cc;
+            --ok-dark-blue: #004499;
+            --ok-light-blue: #e6f2ff;
+            --ok-green: #28a745;
+            --ok-yellow: #ffc107;
+            --ok-red: #dc3545;
+            --ok-gray: #6c757d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--ok-blue) 0%, var(--ok-dark-blue) 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+        }
+
+        .navbar-info {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            min-height: calc(100vh - 70px);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+            position: sticky;
+            top: 70px;
+        }
+
+        .sidebar .nav-link {
+            color: #4a5568;
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .sidebar .nav-link:hover {
+            background: var(--ok-light-blue);
+            color: var(--ok-blue);
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-link.active {
+            background: var(--ok-blue);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 30px;
+            background: #f5f7fa;
+            min-height: calc(100vh - 70px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            color: #2d3748;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            padding: 18px 24px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Stats Cards */
+        .stats-card {
+            background: linear-gradient(135deg, var(--ok-blue) 0%, var(--ok-dark-blue) 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.05);
+            transform: rotate(45deg);
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .stats-card p {
+            margin: 10px 0 0 0;
+            font-size: 0.95rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .stats-card.green {
+            background: linear-gradient(135deg, var(--ok-green) 0%, #1e7e34 100%);
+        }
+
+        .stats-card.yellow {
+            background: linear-gradient(135deg, var(--ok-yellow) 0%, #e0a800 100%);
+        }
+
+        .stats-card.info {
+            background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);
+        }
+
+        /* Forms */
+        .form-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--ok-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--ok-blue);
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--ok-dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.4);
+        }
+
+        /* Tables */
+        .table {
+            font-size: 0.95rem;
+        }
+
+        .table thead th {
+            background: #f8f9fa;
+            color: #4a5568;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        /* Tax Calculation Result */
+        .tax-calculation-result {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+            border: 2px solid #cce5ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .rule-application {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .rule-badge {
+            background: #e9ecef;
+            color: #495057;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Loading Spinner */
+        .spinner-border {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* Alert Styles */
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                min-height: auto;
+                margin-bottom: 20px;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .stats-card h3 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Activity Timeline */
+        .activity-item {
+            padding: 15px;
+            border-left: 3px solid #e9ecef;
+            margin-left: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            border-left-color: var(--ok-blue);
+            background: #f8f9fa;
+        }
+
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 3px solid var(--ok-blue);
+            border-radius: 50%;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-landmark"></i>
+                <div>
+                    <div>Oklahoma Tax Engine</div>
+                    <div class="navbar-info">Comprehensive Tax Management System</div>
+                </div>
+            </a>
+            <div class="ms-auto text-white">
+                <small><i class="fas fa-clock"></i> <span id="current-time"></span></small>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#" onclick="showSection('dashboard', event)">
+                        <i class="fas fa-dashboard"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="#" onclick="showSection('taxpayers', event)">
+                        <i class="fas fa-users"></i> Taxpayers
+                    </a>
+                    <a class="nav-link" href="#" onclick="showSection('taxrules', event)">
+                        <i class="fas fa-book"></i> Tax Rules
+                    </a>
+                    <a class="nav-link" href="#" onclick="showSection('transactions', event)">
+                        <i class="fas fa-exchange-alt"></i> Transactions
+                    </a>
+                    <a class="nav-link" href="#" onclick="showSection('calculator', event)">
+                        <i class="fas fa-calculator"></i> Tax Calculator
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 content-area">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section fade-in">
+                    <div class="page-header">
+                        <h2><i class="fas fa-dashboard text-primary"></i> Dashboard Overview</h2>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <div class="stats-card">
+                                <h3 id="total-taxpayers">0</h3>
+                                <p><i class="fas fa-users"></i> Total Taxpayers</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="stats-card green">
+                                <h3 id="active-rules">0</h3>
+                                <p><i class="fas fa-check-circle"></i> Active Tax Rules</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="stats-card yellow">
+                                <h3 id="pending-transactions">0</h3>
+                                <p><i class="fas fa-clock"></i> Pending Transactions</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="stats-card info">
+                                <h3 id="total-revenue">$0</h3>
+                                <p><i class="fas fa-dollar-sign"></i> Total Revenue</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-line text-primary"></i> Recent Activity
+                                </div>
+                                <div class="card-body">
+                                    <div id="recent-activity">
+                                        <div class="text-center text-muted">
+                                            <i class="fas fa-spinner fa-spin"></i> Loading recent activity...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-info-circle text-info"></i> Quick Stats
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <strong>System Status:</strong>
+                                        <span class="badge bg-success float-end">Online</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Database:</strong>
+                                        <span class="badge bg-success float-end">Connected</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Last Update:</strong>
+                                        <span class="badge bg-info float-end">Just Now</span>
+                                    </div>
+                                    <hr>
+                                    <button class="btn btn-primary btn-sm w-100" onclick="loadDashboard()">
+                                        <i class="fas fa-sync"></i> Refresh Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Taxpayers Section -->
+                <div id="taxpayers-section" class="content-section fade-in" style="display: none;">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2><i class="fas fa-users text-primary"></i> Taxpayers Management</h2>
+                        <button class="btn btn-primary" onclick="showTaxpayerForm()">
+                            <i class="fas fa-plus-circle"></i> Add New Taxpayer
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" id="taxpayer-search"
+                                        placeholder="Search taxpayers...">
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" id="taxpayer-type-filter">
+                                        <option value="">All Types</option>
+                                        <option value="Individual">Individual</option>
+                                        <option value="Corporate">Corporate</option>
+                                        <option value="Partnership">Partnership</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-secondary w-100" onclick="loadTaxpayers()">
+                                        <i class="fas fa-search"></i> Search
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tax ID</th>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="taxpayers-table">
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tax Rules Section -->
+                <div id="taxrules-section" class="content-section fade-in" style="display: none;">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2><i class="fas fa-book text-primary"></i> Tax Rules Configuration</h2>
+                        <button class="btn btn-primary" onclick="showTaxRuleForm()">
+                            <i class="fas fa-plus-circle"></i> Add New Rule
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <select class="form-select" id="taxTypeFilter" onchange="loadTaxRules()">
+                                        <option value="">All Tax Types</option>
+                                        <option value="Income">Income Tax</option>
+                                        <option value="Sales">Sales Tax</option>
+                                        <option value="Property">Property Tax</option>
+                                        <option value="Corporate">Corporate Tax</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" id="ruleStatusFilter" onchange="loadTaxRules()">
+                                        <option value="">All Status</option>
+                                        <option value="true">Active Only</option>
+                                        <option value="false">Inactive Only</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Rule Name</th>
+                                            <th>Tax Type</th>
+                                            <th>Rate</th>
+                                            <th>Min Amount</th>
+                                            <th>Max Amount</th>
+                                            <th>Effective From</th>
+                                            <th>Priority</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="taxrules-table">
+                                        <tr>
+                                            <td colspan="9" class="text-center">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Section -->
+                <div id="transactions-section" class="content-section fade-in" style="display: none;">
+                    <div class="page-header">
+                        <h2><i class="fas fa-exchange-alt text-primary"></i> Tax Transactions</h2>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <select class="form-select" id="statusFilter" onchange="loadTransactions()">
+                                        <option value="">All Statuses</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Paid">Paid</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="date" class="form-control" id="fromDateFilter"
+                                        onchange="loadTransactions()">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="date" class="form-control" id="toDateFilter"
+                                        onchange="loadTransactions()">
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary w-100" onclick="exportTransactions()">
+                                        <i class="fas fa-download"></i> Export Report
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Transaction ID</th>
+                                            <th>Taxpayer</th>
+                                            <th>Tax Type</th>
+                                            <th>Taxable Amount</th>
+                                            <th>Tax Amount</th>
+                                            <th>Total</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactions-table">
+                                        <tr>
+                                            <td colspan="9" class="text-center">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tax Calculator Section -->
+                <div id="calculator-section" class="content-section fade-in" style="display: none;">
+                    <div class="page-header">
+                        <h2><i class="fas fa-calculator text-primary"></i> Tax Calculator</h2>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-calculator"></i> Calculate Tax
+                                </div>
+                                <div class="card-body">
+                                    <form id="tax-calculator-form">
+                                        <div class="mb-3">
+                                            <label class="form-label">Taxpayer ID</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                                <input type="text" class="form-control" id="calc-taxpayer-id"
+                                                    placeholder="e.g., OK123456789" required>
+                                            </div>
+                                            <small class="text-muted">Enter the taxpayer's registered Tax ID</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Tax Type</label>
+                                            <select class="form-select" id="calc-tax-type" required>
+                                                <option value="">Select Tax Type</option>
+                                                <option value="Income">Income Tax</option>
+                                                <option value="Sales">Sales Tax</option>
+                                                <option value="Property">Property Tax</option>
+                                                <option value="Corporate">Corporate Tax</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Taxable Amount</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control" id="calc-amount" step="0.01"
+                                                    min="0" placeholder="0.00" required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Tax Period (Optional)</label>
+                                            <input type="text" class="form-control" id="calc-period"
+                                                placeholder="e.g., 2024-Q1, 2024-03">
+                                            <small class="text-muted">Format: YYYY-QX for quarterly, YYYY-MM for
+                                                monthly</small>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-calculator"></i> Calculate Tax
+                                            </button>
+                                            <button type="button" class="btn btn-success" onclick="createTransaction()"
+                                                style="display: none;" id="create-transaction-btn">
+                                                <i class="fas fa-save"></i> Create Transaction
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <div id="calculation-result" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-info-circle"></i> Current Tax Rates
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="mb-3">Oklahoma Tax Rates (2024)</h5>
+
+                                    <div class="mb-4">
+                                        <h6 class="text-primary"><i class="fas fa-user"></i> Income Tax Brackets:</h6>
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Income Range</th>
+                                                    <th>Tax Rate</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>$0 - $1,000</td>
+                                                    <td>0.5%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>$1,000 - $2,500</td>
+                                                    <td>1.0%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>$2,500 - $3,750</td>
+                                                    <td>2.0%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>$3,750 - $4,900</td>
+                                                    <td>3.0%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>$4,900 - $7,200</td>
+                                                    <td>4.0%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>$7,200+</td>
+                                                    <td>5.0%</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div>
+                                        <h6 class="text-primary"><i class="fas fa-building"></i> Other Tax Rates:</h6>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fas fa-shopping-cart text-success"></i> <strong>Sales
+                                                    Tax:</strong> 4.5%</li>
+                                            <li><i class="fas fa-home text-info"></i> <strong>Property Tax:</strong>
+                                                1.2%</li>
+                                            <li><i class="fas fa-briefcase text-warning"></i> <strong>Corporate
+                                                    Tax:</strong> 6.0%</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Taxpayer Form Modal -->
+    <div class="modal fade" id="taxpayerModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus"></i> Add New Taxpayer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="taxpayer-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tax ID <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="taxpayer-taxid" placeholder="OK123456789"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Taxpayer Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="taxpayer-type" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Individual">Individual</option>
+                                    <option value="Corporate">Corporate</option>
+                                    <option value="Partnership">Partnership</option>
+                                    <option value="Trust">Trust</option>
+                                    <option value="Estate">Estate</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name / Business Name <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="taxpayer-name" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="taxpayer-email"
+                                    placeholder="email@example.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="taxpayer-phone" placeholder="(405) 555-0123">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Street Address</label>
+                            <input type="text" class="form-control" id="taxpayer-address" placeholder="123 Main Street">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" id="taxpayer-city" placeholder="Oklahoma City">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">State</label>
+                                <input type="text" class="form-control" id="taxpayer-state" maxlength="2" value="OK">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" id="taxpayer-zip" placeholder="73102">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTaxpayer()">
+                        <i class="fas fa-save"></i> Save Taxpayer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax Rule Form Modal -->
+    <div class="modal fade" id="taxRuleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle"></i> Add New Tax Rule</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="taxrule-form">
+                        <div class="mb-3">
+                            <label class="form-label">Rule Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="rule-name"
+                                placeholder="e.g., OK Income Tax Bracket 1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tax Type <span class="text-danger">*</span></label>
+                            <select class="form-select" id="rule-taxtype" required>
+                                <option value="">Select Tax Type</option>
+                                <option value="Income">Income Tax</option>
+                                <option value="Sales">Sales Tax</option>
+                                <option value="Property">Property Tax</option>
+                                <option value="Corporate">Corporate Tax</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tax Rate (%) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="rule-rate" step="0.01" min="0" max="100"
+                                placeholder="5.00" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Min Amount ($)</label>
+                                <input type="number" class="form-control" id="rule-min" step="0.01" min="0"
+                                    placeholder="0.00">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Max Amount ($)</label>
+                                <input type="number" class="form-control" id="rule-max" step="0.01" min="0"
+                                    placeholder="Leave empty for no limit">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Flat Amount ($)</label>
+                            <input type="number" class="form-control" id="rule-flat" step="0.01" min="0" value="0">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Effective From <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="rule-effective" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Priority (0 = highest)</label>
+                            <input type="number" class="form-control" id="rule-priority" min="0" value="0">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTaxRule()">
+                        <i class="fas fa-save"></i> Save Rule
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE = '/api';
+        let currentCalculation = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            loadDashboard();
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // Setup tax calculator form
+            document.getElementById('tax-calculator-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                calculateTax();
+            });
+        });
+
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleString();
+        }
+
+        // Navigation
+        function showSection(section, event) {
+            event.preventDefault();
+
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(s => {
+                s.style.display = 'none';
+                s.classList.remove('fade-in');
+            });
+
+            // Remove active class from all nav links
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Show selected section
+            const sectionElement = document.getElementById(section + '-section');
+            sectionElement.style.display = 'block';
+            setTimeout(() => sectionElement.classList.add('fade-in'), 10);
+
+            // Add active class to clicked nav link
+            event.currentTarget.classList.add('active');
+
+            // Load section data
+            switch (section) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'taxpayers':
+                    loadTaxpayers();
+                    break;
+                case 'taxrules':
+                    loadTaxRules();
+                    break;
+                case 'transactions':
+                    loadTransactions();
+                    break;
+            }
+        }
+
+        // Dashboard
+        async function loadDashboard() {
+            try {
+                // Load taxpayers count
+                const taxpayersRes = await fetch(`${API_BASE}/taxpayers`);
+                const taxpayers = await taxpayersRes.json();
+                document.getElementById('total-taxpayers').textContent = taxpayers.length;
+
+                // Load active rules count
+                const rulesRes = await fetch(`${API_BASE}/taxrules?isActive=true`);
+                const rules = await rulesRes.json();
+                document.getElementById('active-rules').textContent = rules.length;
+
+                // Load transactions
+                const transRes = await fetch(`${API_BASE}/transactions`);
+                const transactions = await transRes.json();
+
+                // Count pending transactions and calculate revenue
+                let pending = 0;
+                let revenue = 0;
+                transactions.forEach(t => {
+                    if (t.status === 'Pending') pending++;
+                    if (t.status === 'Paid') revenue += t.taxAmount;
+                });
+
+                document.getElementById('pending-transactions').textContent = pending;
+                document.getElementById('total-revenue').textContent = formatCurrency(revenue);
+
+                // Load recent activity
+                const recentActivity = document.getElementById('recent-activity');
+                if (transactions.length > 0) {
+                    const recentHtml = transactions.slice(0, 5).map(t => `
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>${t.transactionId}</strong>
+                                    <br><small class="text-muted">${t.taxPayerName} - ${t.taxType} Tax</small>
+                                </div>
+                                <div class="text-end">
+                                    <strong>${formatCurrency(t.totalAmount)}</strong>
+                                    <br><span class="badge bg-${getStatusColor(t.status)}">${t.status}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                    recentActivity.innerHTML = recentHtml;
+                } else {
+                    recentActivity.innerHTML = '<p class="text-muted text-center">No recent transactions</p>';
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showAlert('Failed to load dashboard data', 'danger');
+            }
+        }
+
+        // Taxpayers Management
+        async function loadTaxpayers() {
+            try {
+                const response = await fetch(`${API_BASE}/taxpayers`);
+                const taxpayers = await response.json();
+
+                const tbody = document.getElementById('taxpayers-table');
+                if (taxpayers.length > 0) {
+                    tbody.innerHTML = taxpayers.map(tp => `
+                        <tr>
+                            <td><strong>${tp.taxId}</strong></td>
+                            <td>${tp.name}</td>
+                            <td><span class="badge bg-secondary">${tp.type}</span></td>
+                            <td>${tp.email || '<span class="text-muted">N/A</span>'}</td>
+                            <td>${tp.phone || '<span class="text-muted">N/A</span>'}</td>
+                            <td>
+                                <span class="badge bg-${tp.isActive ? 'success' : 'danger'}">
+                                    ${tp.isActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-info" onclick="viewTaxpayer(${tp.id})" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="editTaxpayer(${tp.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No taxpayers found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading taxpayers:', error);
+                showAlert('Failed to load taxpayers', 'danger');
+            }
+        }
+
+        function showTaxpayerForm() {
+            document.getElementById('taxpayer-form').reset();
+            const modal = new bootstrap.Modal(document.getElementById('taxpayerModal'));
+            modal.show();
+        }
+
+        async function saveTaxpayer() {
+            const taxpayer = {
+                taxId: document.getElementById('taxpayer-taxid').value,
+                name: document.getElementById('taxpayer-name').value,
+                type: document.getElementById('taxpayer-type').value,
+                email: document.getElementById('taxpayer-email').value,
+                phone: document.getElementById('taxpayer-phone').value,
+                address: document.getElementById('taxpayer-address').value,
+                city: document.getElementById('taxpayer-city').value,
+                state: document.getElementById('taxpayer-state').value,
+                zipCode: document.getElementById('taxpayer-zip').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/taxpayers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(taxpayer)
+                });
+
+                if (response.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById('taxpayerModal')).hide();
+                    loadTaxpayers();
+                    showAlert('Taxpayer added successfully!', 'success');
+                } else {
+                    const error = await response.json();
+                    showAlert(error.error || 'Failed to add taxpayer', 'danger');
+                }
+            } catch (error) {
+                console.error('Error saving taxpayer:', error);
+                showAlert('An error occurred while saving', 'danger');
+            }
+        }
+
+        // Tax Rules Management
+        async function loadTaxRules() {
+            try {
+                const taxType = document.getElementById('taxTypeFilter').value;
+                const isActive = document.getElementById('ruleStatusFilter').value;
+
+                let url = `${API_BASE}/taxrules`;
+                const params = [];
+                if (taxType) params.push(`taxType=${taxType}`);
+                if (isActive) params.push(`isActive=${isActive}`);
+                if (params.length > 0) url += '?' + params.join('&');
+
+                const response = await fetch(url);
+                const rules = await response.json();
+
+                const tbody = document.getElementById('taxrules-table');
+                if (rules.length > 0) {
+                    tbody.innerHTML = rules.map(rule => `
+                        <tr>
+                            <td><strong>${rule.ruleName}</strong></td>
+                            <td><span class="badge bg-info">${rule.taxType}</span></td>
+                            <td>${(rule.rate * 100).toFixed(2)}%</td>
+                            <td>${rule.minAmount !== null ? formatCurrency(rule.minAmount) : '<span class="text-muted">N/A</span>'}</td>
+                            <td>${rule.maxAmount !== null ? formatCurrency(rule.maxAmount) : '<span class="text-muted">No limit</span>'}</td>
+                            <td>${new Date(rule.effectiveFrom).toLocaleDateString()}</td>
+                            <td><span class="badge bg-secondary">${rule.priority}</span></td>
+                            <td>
+                                <span class="badge bg-${rule.isActive ? 'success' : 'danger'}">
+                                    ${rule.isActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-warning" onclick="editTaxRule(${rule.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteTaxRule(${rule.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="9" class="text-center">No tax rules found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading tax rules:', error);
+                showAlert('Failed to load tax rules', 'danger');
+            }
+        }
+
+        function showTaxRuleForm() {
+            document.getElementById('taxrule-form').reset();
+            document.getElementById('rule-effective').value = new Date().toISOString().split('T')[0];
+            const modal = new bootstrap.Modal(document.getElementById('taxRuleModal'));
+            modal.show();
+        }
+
+        async function saveTaxRule() {
+            const rule = {
+                ruleName: document.getElementById('rule-name').value,
+                taxType: document.getElementById('rule-taxtype').value,
+                rate: parseFloat(document.getElementById('rule-rate').value) / 100,
+                minAmount: parseFloat(document.getElementById('rule-min').value) || null,
+                maxAmount: parseFloat(document.getElementById('rule-max').value) || null,
+                flatAmount: parseFloat(document.getElementById('rule-flat').value) || 0,
+                effectiveFrom: document.getElementById('rule-effective').value,
+                priority: parseInt(document.getElementById('rule-priority').value) || 0,
+                isActive: true
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/taxrules`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(rule)
+                });
+
+                if (response.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById('taxRuleModal')).hide();
+                    loadTaxRules();
+                    showAlert('Tax rule added successfully!', 'success');
+                } else {
+                    const error = await response.json();
+                    showAlert(error.error || 'Failed to add tax rule', 'danger');
+                }
+            } catch (error) {
+                console.error('Error saving tax rule:', error);
+                showAlert('An error occurred while saving', 'danger');
+            }
+        }
+
+        // Transactions Management
+        async function loadTransactions() {
+            try {
+                const status = document.getElementById('statusFilter').value;
+                const fromDate = document.getElementById('fromDateFilter').value;
+                const toDate = document.getElementById('toDateFilter').value;
+
+                let url = `${API_BASE}/transactions`;
+                const params = [];
+                if (status) params.push(`status=${status}`);
+                if (fromDate) params.push(`fromDate=${fromDate}`);
+                if (toDate) params.push(`toDate=${toDate}`);
+                if (params.length > 0) url += '?' + params.join('&');
+
+                const response = await fetch(url);
+                const transactions = await response.json();
+
+                const tbody = document.getElementById('transactions-table');
+                if (transactions.length > 0) {
+                    tbody.innerHTML = transactions.map(t => `
+                        <tr>
+                            <td><strong>${t.transactionId}</strong></td>
+                            <td>
+                                ${t.taxPayerName}
+                                <br><small class="text-muted">${t.taxPayerTaxId}</small>
+                            </td>
+                            <td><span class="badge bg-info">${t.taxType}</span></td>
+                            <td>${formatCurrency(t.taxableAmount)}</td>
+                            <td class="text-danger">${formatCurrency(t.taxAmount)}</td>
+                            <td><strong>${formatCurrency(t.totalAmount)}</strong></td>
+                            <td>${new Date(t.transactionDate).toLocaleDateString()}</td>
+                            <td>
+                                <span class="badge bg-${getStatusColor(t.status)}">${t.status}</span>
+                            </td>
+                            <td>
+                                ${t.status === 'Pending' ? `
+                                    <button class="btn btn-sm btn-success" onclick="payTransaction(${t.id})" title="Mark as Paid">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="cancelTransaction(${t.id})" title="Cancel">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-sm btn-info" onclick="viewTransaction(${t.id})" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                `}
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="9" class="text-center">No transactions found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                showAlert('Failed to load transactions', 'danger');
+            }
+        }
+
+        async function payTransaction(id) {
+            if (confirm('Mark this transaction as paid?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/transactions/${id}/pay`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentMethod: 'Manual' })
+                    });
+
+                    if (response.ok) {
+                        loadTransactions();
+                        showAlert('Transaction marked as paid', 'success');
+                    } else {
+                        showAlert('Failed to update transaction', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error paying transaction:', error);
+                    showAlert('An error occurred', 'danger');
+                }
+            }
+        }
+
+        async function cancelTransaction(id) {
+            if (confirm('Cancel this transaction?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/transactions/${id}/cancel`, {
+                        method: 'PUT'
+                    });
+
+                    if (response.ok) {
+                        loadTransactions();
+                        showAlert('Transaction cancelled', 'success');
+                    } else {
+                        showAlert('Failed to cancel transaction', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error cancelling transaction:', error);
+                    showAlert('An error occurred', 'danger');
+                }
+            }
+        }
+
+        // Tax Calculator
+        async function calculateTax() {
+            const request = {
+                taxPayerId: document.getElementById('calc-taxpayer-id').value,
+                taxType: document.getElementById('calc-tax-type').value,
+                taxableAmount: parseFloat(document.getElementById('calc-amount').value),
+                taxPeriod: document.getElementById('calc-period').value || null
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/transactions/calculate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(request)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    currentCalculation = request;
+                    displayCalculationResult(result);
+                    document.getElementById('create-transaction-btn').style.display = 'block';
+                } else {
+                    showAlert(result.error || result.message || 'Calculation failed', 'danger');
+                }
+            } catch (error) {
+                console.error('Error calculating tax:', error);
+                showAlert('An error occurred during calculation', 'danger');
+            }
+        }
+
+        function displayCalculationResult(result) {
+            const resultDiv = document.getElementById('calculation-result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'tax-calculation-result fade-in';
+
+            let rulesHtml = '';
+            if (result.appliedRules && result.appliedRules.length > 0) {
+                rulesHtml = `
+        <h6 class="mt-4 mb-3"><i class="fas fa-list"></i> Applied Tax Rules:</h6>
+        ${result.appliedRules.map(rule => `
+            <div class="rule-application">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="rule-badge">${rule.ruleName}</span>
+                        ${rule.minAmount !== null ? `<small class="text-muted">($${rule.minAmount.toFixed(2)} - ${rule.maxAmount ? '$' + rule.maxAmount.toFixed(2) : 'No limit'})</small>` : ''}
+                    </div>
+                    <div class="text-end">
+                        <small>Rate: ${(rule.rate * 100).toFixed(2)}%</small>
+                        <br><strong>${formatCurrency(rule.calculatedAmount)}</strong>
+                    </div>
+                </div>
+            </div>
+        `).join('')}
+    `;
+            }
+
+            resultDiv.innerHTML = `
+                <h5 class="text-success mb-4"><i class="fas fa-check-circle"></i> Tax Calculation Complete</h5>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h6>Taxable Amount</h6>
+                        <h3>${formatCurrency(result.taxableAmount)}</h3>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-danger">Tax Amount</h6>
+                        <h3 class="text-danger">${formatCurrency(result.taxAmount)}</h3>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-primary">Total Amount</h6>
+                        <h3 class="text-primary">${formatCurrency(result.totalAmount)}</h3>
+                    </div>
+                </div>
+                ${rulesHtml}
+            `;
+        }
+
+        async function createTransaction() {
+            if (!currentCalculation) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/transactions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentCalculation)
+                });
+
+                if (response.ok) {
+                    const transaction = await response.json();
+                    showAlert(`Transaction ${transaction.transactionId} created successfully!`, 'success');
+                    document.getElementById('tax-calculator-form').reset();
+                    document.getElementById('calculation-result').style.display = 'none';
+                    document.getElementById('create-transaction-btn').style.display = 'none';
+                    currentCalculation = null;
+                } else {
+                    const error = await response.json();
+                    showAlert(error.error || 'Failed to create transaction', 'danger');
+                }
+            } catch (error) {
+                console.error('Error creating transaction:', error);
+                showAlert('An error occurred', 'danger');
+            }
+        }
+
+        // Utility Functions
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        }
+
+        function getStatusColor(status) {
+            switch (status) {
+                case 'Paid': return 'success';
+                case 'Pending': return 'warning';
+                case 'Cancelled': return 'danger';
+                default: return 'secondary';
+            }
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Additional helper functions
+        async function viewTaxpayer(id) {
+            try {
+                const response = await fetch(`${API_BASE}/taxpayers/${id}`);
+                const taxpayer = await response.json();
+
+                const info = `
+                    <table class="table table-sm">
+                        <tr><td><strong>Tax ID:</strong></td><td>${taxpayer.taxId}</td></tr>
+                        <tr><td><strong>Name:</strong></td><td>${taxpayer.name}</td></tr>
+                        <tr><td><strong>Type:</strong></td><td>${taxpayer.type}</td></tr>
+                        <tr><td><strong>Email:</strong></td><td>${taxpayer.email || 'N/A'}</td></tr>
+                        <tr><td><strong>Phone:</strong></td><td>${taxpayer.phone || 'N/A'}</td></tr>
+                        <tr><td><strong>Address:</strong></td><td>${taxpayer.address || 'N/A'}, ${taxpayer.city || ''}, ${taxpayer.state || ''} ${taxpayer.zipCode || ''}</td></tr>
+                        <tr><td><strong>Registration Date:</strong></td><td>${new Date(taxpayer.registrationDate).toLocaleDateString()}</td></tr>
+                        <tr><td><strong>Status:</strong></td><td><span class="badge bg-${taxpayer.isActive ? 'success' : 'danger'}">${taxpayer.isActive ? 'Active' : 'Inactive'}</span></td></tr>
+                    </table>
+                `;
+
+                showModal('Taxpayer Details', info);
+            } catch (error) {
+                console.error('Error viewing taxpayer:', error);
+                showAlert('Failed to load taxpayer details', 'danger');
+            }
+        }
+
+        function showModal(title, content) {
+            const modalHtml = `
+                <div class="modal fade" id="infoModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">${title}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                ${content}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('infoModal'));
+            modal.show();
+
+            document.getElementById('infoModal').addEventListener('hidden.bs.modal', function () {
+                this.remove();
+            });
+        }
+
+        // Placeholder functions for future implementation
+        function editTaxpayer(id) {
+            showAlert('Edit functionality coming soon', 'info');
+        }
+
+        function editTaxRule(id) {
+            showAlert('Edit functionality coming soon', 'info');
+        }
+
+        function deleteTaxRule(id) {
+            if (confirm('Are you sure you want to delete this tax rule?')) {
+                showAlert('Delete functionality coming soon', 'info');
+            }
+        }
+
+        function viewTransaction(id) {
+            showAlert('Transaction details coming soon', 'info');
+        }
+
+        function exportTransactions() {
+            showAlert('Export functionality coming soon', 'info');
+        }
+    </script>
+</body>
+
+</html>
