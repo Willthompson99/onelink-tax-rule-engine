@@ -2,7 +2,7 @@
 
 A comprehensive tax management system built with ASP.NET Core 8.0, demonstrating enterprise-level architecture and modern development practices aligned with the Oklahoma Tax Commission's technology requirements.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - .NET 8.0 SDK or later
@@ -34,7 +34,7 @@ A comprehensive tax management system built with ASP.NET Core 8.0, demonstrating
    - Web Interface: https://localhost:5001
    - API Documentation: https://localhost:5001/api-docs
 
-## 🎯 Project Overview
+## Project Overview
 
 This tax engine demonstrates proficiency in:
 - **Web-based application development** from conception to deployment
@@ -44,7 +44,7 @@ This tax engine demonstrates proficiency in:
 - **RESTful API** development with comprehensive documentation
 - **Responsive web interfaces** with real-time functionality
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Backend**: ASP.NET Core 8.0, C# 12
 - **Database**: SQL Server with Entity Framework Core 8.0
@@ -53,32 +53,32 @@ This tax engine demonstrates proficiency in:
 - **Architecture**: Clean Architecture with Repository Pattern
 - **Caching**: In-Memory Cache for performance optimization
 
-## 📋 Features
+## Features
 
 ### Core Functionality
-- ✅ Multi-tax type support (Income, Sales, Property, Corporate)
-- ✅ Dynamic rule engine with temporal validity
-- ✅ Progressive tax bracket calculations
-- ✅ Real-time tax computation
-- ✅ Transaction management with audit trail
-- ✅ Taxpayer registration and management
+- Multi-tax type support (Income, Sales, Property, Corporate)
+- Dynamic rule engine with temporal validity
+- Progressive tax bracket calculations
+- Real-time tax computation
+- Transaction management with audit trail
+- Taxpayer registration and management
 
 ### Technical Features
-- 🔧 RESTful API with comprehensive endpoints
-- 🔧 Swagger documentation for API testing
-- 🔧 Input validation and error handling
-- 🔧 Pagination support for large datasets
-- 🔧 Soft delete implementation
-- 🔧 Caching for frequently accessed data
+- RESTful API with comprehensive endpoints
+- Swagger documentation for API testing
+- Input validation and error handling
+- Pagination support for large datasets
+- Soft delete implementation
+- Caching for frequently accessed data
 
 ### User Interface
-- 💻 Modern, responsive dashboard
-- 💻 Interactive tax calculator
-- 💻 Real-time data updates
-- 💻 Intuitive navigation
-- 💻 Transaction status management
+- Modern, responsive dashboard
+- Interactive tax calculator
+- Real-time data updates
+- Intuitive navigation
+- Transaction status management
 
-## 📊 Database Schema
+## Database Schema
 
 ### Tables
 1. **TaxPayers** - Stores taxpayer information
@@ -115,7 +115,7 @@ This tax engine demonstrates proficiency in:
 - `POST /api/transactions` - Create transaction
 - `PUT /api/transactions/{id}/pay` - Mark as paid
 
-## 🧮 Tax Calculation Logic
+## Tax Calculation Logic
 
 ### Income Tax (Progressive Brackets)
 - $0 - $1,000: 0.5%
@@ -130,7 +130,7 @@ This tax engine demonstrates proficiency in:
 - Property Tax: 1.2% (flat rate)
 - Corporate Tax: 6% (flat rate)
 
-## 🏗️ Architecture Highlights
+## Architecture Highlights
 
 ### Clean Architecture
 ```
@@ -148,7 +148,7 @@ OklahomaTaxEngine/
 - **Service Layer** - Business logic separation
 - **DTO Pattern** - Data transfer objects
 
-## 🔒 Security Considerations
+## Security Considerations
 
 - Input validation on all endpoints
 - SQL injection prevention via Entity Framework
@@ -156,7 +156,7 @@ OklahomaTaxEngine/
 - Proper error handling without exposing internals
 - Secure connection strings management
 
-## 🚀 Performance Optimizations
+## Performance Optimizations
 
 - Efficient database queries with proper indexing
 - Memory caching for frequently accessed rules
@@ -164,7 +164,7 @@ OklahomaTaxEngine/
 - Pagination for large datasets
 - Optimized LINQ queries
 
-## 🧪 Testing
+## Testing
 
 The project structure supports:
 - Unit testing with xUnit
@@ -176,7 +176,7 @@ Example test command:
 dotnet test
 ```
 
-## 📈 Future Enhancements
+## Future Enhancements
 
 1. **Reporting Module** - Tax reports and analytics
 2. **Bulk Processing** - Handle large-scale calculations
@@ -185,23 +185,23 @@ dotnet test
 5. **Multi-tenant Support** - Multiple jurisdictions
 6. **Export Functionality** - PDF/Excel reports
 
-## 🤝 Alignment with OTC Requirements
+## Alignment with OTC Requirements
 
 This project demonstrates:
-- ✅ **Web-based application** from conception to deployment
-- ✅ **Complex problem solving** with tax calculations
-- ✅ **.NET/C# expertise** (preferred technology)
-- ✅ **SQL programming** knowledge
-- ✅ **Software lifecycle** understanding
-- ✅ **Business analysis** and requirements translation
-- ✅ **Team collaboration** ready architecture
+- **Web-based application** from conception to deployment
+- **Complex problem solving** with tax calculations
+- **.NET/C# expertise** (preferred technology)
+- **SQL programming** knowledge
+- **Software lifecycle** understanding
+- **Business analysis** and requirements translation
+- **Team collaboration** ready architecture
 
-## 📞 Contact
+## Contact
 
-**[Your Name]**
-- Email: [your.email@example.com]
-- LinkedIn: [your-linkedin-profile]
-- GitHub: [your-github-profile]
+**Will Thompson**
+- Email: will.j.thompson@outlook.com
+- LinkedIn: https://www.linkedin.com/in/will-thompson-8
+- GitHub: github.com/willthompson99
 
 ---
 
