@@ -13,8 +13,8 @@ A comprehensive tax management system built with ASP.NET Core 8.0, demonstrating
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/OklahomaTaxEngine.git
-   cd OklahomaTaxEngine
+   git clone https://github.com/willthompson99/onelink-tax-rule-engine.git
+   cd ONELINK-TAX-RULE-ENGINE
    ```
 
 2. **Install dependencies**
@@ -200,7 +200,7 @@ This project demonstrates:
 
 **Will Thompson**
 - Email: will.j.thompson@outlook.com
-- LinkedIn: https://www.linkedin.com/in/will-thompson-8
+- LinkedIn: https://www.linkedin.com/in/will-thompson-8012591a3/
 - GitHub: github.com/willthompson99
 
 ---
